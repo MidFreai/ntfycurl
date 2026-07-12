@@ -5,7 +5,10 @@
 #include "dasb.h"
 
 void print_help(char* program_name){
-  printf("%s HELP\n", program_name);
+  printf("%s -- Send notifications to your device\n"
+    "Usage: %s <message>\n"
+    "Commands:\n  -d : Set the message\n  -t : Set the field of title\n  -h : Print help\n"
+    , program_name, program_name);
 }
 
 int main(int argc, char **argv){
