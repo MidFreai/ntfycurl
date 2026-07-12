@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <curl/curl.h>
+#include <string.h>
 
 #include "dasb.h"
 
@@ -29,12 +30,45 @@ int main(int argc, char **argv){
   if(result != CURLE_OK) return (int)result;
   curl = curl_easy_init();
 
-  if(argc == 1) message = argv[0];
+  int data = 0;
+  int titulo = 0;
+  while(argc > 1){
+    char* command = argv[0];
+    shift(argv, argc);
+    if(!strcmp(command, "-h")){
+      print_help(program_name);
+      return 0;
+    }
+    if(!strcmp(command, "-d")){
+      if(argc == 0){
+        printf("Argumentos insuficientes para -d\n");
+      }else{
+        message = argv[0];
+        shift(argv, argc);
+        data = 1;
+      }
+    }
+    if(!strcmp(command, "-t")){
+      if(argc == 0){
+        printf("Argumentos insuficientes para -t\n");
+      }else{
+        sb_append_cstr(&Title, argv[0]);
+        shift(argv, argc);
+        titulo = 1;
+      }
+    }
+  }
+  if(argc == 1 && !data) {
+    message = argv[0];
+    data = 1;
+  }
 
   if(curl){
     sb_append_cstr(&Postfield, message);
     sb_append_cstr(&Postfield, " : Mensagem enviada de Omarchy");
-
+    if(!titulo){
+      sb_append_cstr(&Title, "Omarchy");
+    }
     headers = curl_slist_append(headers, Title.items);
 
     curl_easy_setopt(curl, CURLOPT_URL, url);
