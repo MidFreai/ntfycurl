@@ -32,34 +32,42 @@ int main(int argc, char **argv){
 
   int data = 0;
   int titulo = 0;
-  while(argc > 1){
-    char* command = argv[0];
-    shift(argv, argc);
-    if(!strcmp(command, "-h")){
-      print_help(program_name);
-      return 0;
-    }
-    if(!strcmp(command, "-d")){
+  char* command = argv[0];
+  shift(argv, argc);
+  if(!strcmp(command, "-h")){
+    print_help(program_name);
+    return 0;
+  }
+
+  do{
+    if(!strcmp(command, "-d") && !data){
       if(argc == 0){
         printf("Argumentos insuficientes para -d\n");
+        print_help(program_name);
+        return 0;
       }else{
         message = argv[0];
         shift(argv, argc);
         data = 1;
+        if(argc > 0){ command = argv[0]; shift(argv, argc); }
       }
     }
-    if(!strcmp(command, "-t")){
+    if(!strcmp(command, "-t") && !titulo){
       if(argc == 0){
         printf("Argumentos insuficientes para -t\n");
+        print_help(program_name);
+        return 0;
       }else{
         sb_append_cstr(&Title, argv[0]);
         shift(argv, argc);
         titulo = 1;
+        if(argc > 0){ command = argv[0]; shift(argv, argc); }
       }
     }
-  }
-  if(argc == 1 && !data) {
-    message = argv[0];
+  }while(argc > 0);
+
+  if(argc == 0 && !data) {
+    message = command;
     data = 1;
   }
 
