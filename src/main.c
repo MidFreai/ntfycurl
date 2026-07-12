@@ -89,5 +89,6 @@ int main(int argc, char **argv){
   }
   curl_global_cleanup();
   sb_free(Postfield);
+  sb_free(Title);
   return 0;
 }
