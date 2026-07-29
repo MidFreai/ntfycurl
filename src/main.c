@@ -24,7 +24,6 @@ int main(int argc, char **argv){
   String_Builder Title = {0};
   sb_append_cstr(&Title, "Title: ");
 
-  char* url = "https://ntfy.sh/te2LHOA1g4-middo-0";
   char* message = "";
 
   struct curl_slist *headers = NULL;
@@ -75,15 +74,28 @@ int main(int argc, char **argv){
   }
 
   if(curl){
+    FILE* topic;
+    do{
+      topic = fopen("topic.env", "r");
+      if(topic == NULL){
+        fclose(topic);
+        topic = fopen("topic.env", "w");
+        fclose(topic);
+      }
+    }while(topic == NULL);
+    char* url = "https://ntfy.sh/te2LHOA1g4-middo-0";
+    curl_easy_setopt(curl, CURLOPT_URL, url);
+
     sb_append_cstr(&Postfield, message);
-    sb_append_cstr(&Postfield, " : Mensagem enviada de Omarchy");
+    sb_append_cstr(&Postfield, " : Mensagem enviada de ");
+    sb_append_cstr(&Postfield, program_name);
+    curl_easy_setopt(curl, CURLOPT_POSTFIELDS, Postfield.items);
+
     if(!titulo){
       sb_append_cstr(&Title, "Omarchy");
     }
     headers = curl_slist_append(headers, Title.items);
 
-    curl_easy_setopt(curl, CURLOPT_URL, url);
-    curl_easy_setopt(curl, CURLOPT_POSTFIELDS, Postfield.items);
     curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
 
     result = curl_easy_perform(curl);
