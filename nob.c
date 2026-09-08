@@ -3,7 +3,7 @@
 int main(int argc, char *argv[]){
   NOB_GO_REBUILD_URSELF_PLUS(argc, argv, "./buildsys/utils.c");
 
-  bool* run = flag_bool("run", false, "Run the program");
+  Flag_List* run = flag_list("run", "Run the program");
 
   basicFlagParse(argc, argv);
 
@@ -12,8 +12,12 @@ int main(int argc, char *argv[]){
   nob_cmd_append(&cmd, "clang", "src/main.c", "-o", "ntfy", "-lcurl", "-Wall", "-Wextra");
   nob_cmd_run(&cmd);
 
-  if(*run){
+  if(run->count){
     nob_cmd_append(&cmd, "./ntfy");
+
+    nob_cmd_append(&cmd, "-d");
+    nob_cmd_append(&cmd, run->items[0]);
+
     nob_cmd_run(&cmd);
   }
 
