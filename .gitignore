@@ -1,2 +1,4 @@
 ntfy
 *.env
+nob
+*.old
